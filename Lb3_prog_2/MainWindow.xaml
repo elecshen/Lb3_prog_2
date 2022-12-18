@@ -5,8 +5,182 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lb3_prog_2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="900">
+    <Window.DataContext>
+        <local:InformationSystem/>
+    </Window.DataContext>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Width="200">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Content="Доступных товары" Margin="0,0,5,0" FontSize="20" VerticalAlignment="Center"></Label>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ItemsControl Margin="5,0,5,10" ItemsSource="{Binding Products}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Label  Content="{Binding Name}" Padding="4,0,4,7" FontSize="18" VerticalAlignment="Top"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0" VerticalAlignment="Bottom">
+                                        <Label Content="Вес:" FontSize="8" Padding="4,0,0,0"/>
+                                        <Label Content="{Binding Weight}" FontSize="8" Padding="5,0,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Button Grid.Column="2" Height="20" Width="20" Padding="0" FontWeight="Bold" VerticalAlignment="Center" FontSize="18" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.AddToSelectedCommand}" CommandParameter="{Binding Name}">
+                                    <TextBlock Text="+" Margin="0,-5,0,0"/>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+        <Grid Grid.Column="1" Margin="5,0,0,0" Width="250">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Content="Выбранные товары" Margin="0,0,5,0" FontSize="20" VerticalAlignment="Center"></Label>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ItemsControl Margin="5,0,5,10" ItemsSource="{Binding SelectedProducts}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Label  Content="{Binding Product.Name}" Padding="4,0,4,7" FontSize="18" VerticalAlignment="Top"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0" VerticalAlignment="Bottom">
+                                        <Label Content="Вес:" FontSize="8" Padding="4,0,0,0"/>
+                                        <Label Content="{Binding Product.Weight}" FontSize="8" Padding="5,0,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Label Grid.Column="2" Content="{Binding Count}" Margin="0,0,5,0" VerticalAlignment="Center" FontSize="18"/>
+                                <Button Grid.Column="3" Height="20" Width="20" Padding="0" FontWeight="Bold" VerticalAlignment="Center" FontSize="18" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.RemoveFromSelectedCommand}" CommandParameter="{Binding Product.Name}">
+                                    <TextBlock Text="-" Margin="0,-5,0,0"/>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Город доставки: " FontSize="16"/>
+                    <ComboBox Name="city" Grid.Column="2" Margin="0,0,10,0" ItemsSource="{Binding Cities}" SelectedIndex="0" FontSize="14" VerticalContentAlignment="Center" Height="25"/>
+                </Grid>
+                <Button Grid.Row="1" Content="Собрать заказ" HorizontalAlignment="Right" Margin="0,5,10,5" FontSize="18" Command="{Binding CreateOrderCommand}" CommandParameter="{Binding ElementName=city, Path=SelectedValue}"/>
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Content="Заказы на отправку" Margin="0,0,5,0" FontSize="20" VerticalAlignment="Center"></Label>
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Orders}" SelectedItem="{Binding SelectedOrder}" HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" Content="{Binding ShortId}" FontSize="14" VerticalAlignment="Center"/>
+                                    <Label Grid.Column="1" Content="{Binding Destination}" FontSize="16" VerticalAlignment="Center"/>
+                                    <ScrollViewer Grid.Column="3" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+                                        <ItemsControl ItemsSource="{Binding Categories}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Abbreviation}" Background="#FFABABAB" Width="25" Height="25" Margin="2" VerticalAlignment="Center" Padding="8,2" FontSize="14"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Content="Способы доставки" Margin="0,0,5,0" FontSize="20" VerticalAlignment="Center"></Label>
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Vehicles}" SelectedItem="{Binding SelectedVehicle}" SelectedIndex="0" >
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding TypeName}" IsEnabled="{Binding IsCanSelect}" FontSize="18" VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Цена: " FontSize="18"/>
+                <Label Grid.Column="1" Content="{Binding OfferCost}" FontSize="18"/>
+                <Button Grid.Column="2" Content="Отправить заказ" IsEnabled="{Binding IsSelected}" HorizontalAlignment="Right" Margin="0,5,10,5" FontSize="18" Command="{Binding SendOrderCommand}"/>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

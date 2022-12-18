@@ -1,39 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace Lb3_prog_2
 {
     internal abstract class Vehicle : INotifyPropertyChanged
     {
-        protected static double distRatio = 0;
-        protected static double startCost = 0;
-        public double CurrentLoad { get; }
-        public double LoadCapacity { get; }
-        private ObservableCollection<Product> cargo;
-        public ReadOnlyObservableCollection<Product> Cargo;
+        protected double costRatio = 0;
+        protected double startCost = 0;
+        protected List<Product.CategoryConteiner> Categories { get; private protected set; }
+        protected bool isCanSelect;
+        public bool IsCanSelect
+        {
+            get { return isCanSelect; }
+            set
+            {
+                isCanSelect = value;
+                OnPropertyChanged();
+            }
+        }
+        public string TypeName { get; protected set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public static double CalculateCost(double distance, double weight)
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            return distRatio * distance * weight + startCost;
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-        public void AddCargo(Product product)
+        public double CalculateCost(double weight)
         {
-            cargo.Add(product);
+            return costRatio * weight + startCost;
         }
 
-        public void RemuveCargo(int id)
+        public bool IsCanCarry(List<Product.CategoryConteiner> categoties)
         {
-            cargo.RemoveAt(id);
+            foreach (var item in categoties)
+            {
+                if (!Categories.Contains(item)) return false;
+            }
+            return true;
         }
 
-        public abstract void/*waybill*/ SendByRoute(/*cargo*/);
+        public void SendByRoute(Order order)
+        {
+            string json = JsonSerializer.Serialize(order);
+            File.AppendAllText($"d:\\h.json", json + "\n");
+        }
     }
 }
